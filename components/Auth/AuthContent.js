@@ -5,6 +5,8 @@ import FlatButton from '../ui/FlatButton';
 import AuthForm from './AuthForm';
 import { Colors } from '../../constants/styles';
 
+import { useNavigation } from '@react-navigation/native';
+
 function AuthContent({ isLogin, onAuthenticate }) {
 
   const [credentialsInvalid, setCredentialsInvalid] = useState({
@@ -13,9 +15,18 @@ function AuthContent({ isLogin, onAuthenticate }) {
     confirmEmail: false,
     confirmPassword: false,
   });
-
+  const navigation=useNavigation();
   function switchAuthModeHandler() {
     // Todo
+
+    if(isLogin){
+      // navigation.navigate('Signup')
+      // if i need to hide the return button 
+      navigation.replace('Signup')
+    } else {
+      navigation.replace('Login')
+    }
+
   }
 
   function submitHandler(credentials) {
@@ -25,7 +36,7 @@ function AuthContent({ isLogin, onAuthenticate }) {
     password = password.trim();
 
     const emailIsValid = email.includes('@');
-    const passwordIsValid = password.length > 6;
+    const passwordIsValid = password.length > 4;
     const emailsAreEqual = email === confirmEmail;
     const passwordsAreEqual = password === confirmPassword;
 
