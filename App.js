@@ -8,7 +8,9 @@ import WelcomeScreen from "./screens/WelcomeScreen";
 import IconButton from "./components/ui/IconButton";
 import { Colors } from "./constants/styles";
 import AuthContextProvider, { AuthContext } from "./store/auth-context";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import AppLoading from "expo-app-loading";
 
 const Stack = createNativeStackNavigator();
 
@@ -65,12 +67,34 @@ function Navigation() {
   );
 }
 
+// this to delete the behaviour of load the login before it check if there is a token or not 
+function Root() {
+  const [isTryLogin, setIsTryLogin] = useState(true);
+  const authCTX = useContext(AuthContext);
+
+  useEffect(() => {
+    async function getToken() {
+      const storedToken = await AsyncStorage.getItem("token");
+      if (storedToken) {
+        authCTX.authenticate(storedToken);
+      }
+      setIsTryLogin(false);
+    }
+    getToken();
+  }, []);
+  if (isTryLogin) {
+    return <AppLoading />;
+  }
+
+  return <Navigation />;
+}
+
 export default function App() {
   return (
     <>
       <StatusBar style="light" />
       <AuthContextProvider>
-        <Navigation />
+        <Root />
       </AuthContextProvider>
     </>
   );
