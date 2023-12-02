@@ -14,9 +14,10 @@ async function signupHandler({email, password}){
     const token=await createUser(email,password)
       authCTX.authenticate(token)
     } catch(error){
+      console.error("Authentication error:", error);
       Alert.alert('SingnUp Error','Enter a Valid email')
+      setIsAuthenticating(false)
     }
-    setIsAuthenticating(false)
   }
 
   if(isAuthenticating) {
